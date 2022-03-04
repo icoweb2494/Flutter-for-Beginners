@@ -1,0 +1,14 @@
+* Introduction
+In this course, you will learn what a widget is and the three different types of widgets: stateless, stateful, and inherited. You will explore some of the most common widgets in Flutter, view them in action, and learn how to add them to your application. Additionally, you will gain an understanding of how layout widgets can help you to structure your user interface (UI).
+
+Widgets are classes and objects within the Dart language. Therefore, this course will use a lot of the knowledge that you gained in our Dart Course. Dart Classes and Constructs, regarding Dart classes and enums. Armed with this knowledge, we will explore Stateful and Stateless widgets, which are classes that inherit from specific superclasses and are key to how you manage the UI of your app.
+
+Next, we will take a closer look at the built-in widgets that come as part of the Flutter framework and cover most of your UI needs. It is useful to be aware of what is already available, including the layout widgets that control the positioning of their nested child widgets, which, in turn, gives you greater control of how your app looks to the user. Finally, we will look at the concept of streams, which allows your code to react to changes in the data or state outside of your widget.
+
+The following topics will be covered in this course:
+• Stateful/stateless widgets
+• Built-in widgets
+• Understanding built-in layout widgets
+• Using streams
+By the end of the course, you should have a good idea of how Flutter apps are put
+together and why widgets are such an important part of the Flutter framework.

@@ -1,0 +1,242 @@
+* Built-in widgets
+Flutter has a big focus on the UI, and because of this, it contains a large catalog of widgets that allow you to get started with a high-quality UI relatively easily.
+
+The available widgets of Flutter range from simple ones, such as the Text widget in the Flutter counter application example, to complex widgets that enable you to design dynamic UI with animations and multiple gesture handling.
+
+In this section, we will go through these built-in widgets in more detail. We will start with the basic widgets of text and images, move on to more advanced widgets involving user interaction, such as buttons, and finish with a look at layout widgets, which control how other widgets are positioned on the UI.
+
+* Basic widgets
+The basic widgets in Flutter are a good starting point, not simply because of their ease of use, but because they also demonstrate the power and flexibility of the framework, even in simple scenarios.
+
+In this section, we will explore the most common widgets that you are likely to use as you get started with Flutter. However, there are many more widgets available that you can explore in the Widget catalog at https://flutter.dev/docs/development/ui/widgets.
+
+* The Text widget
+The Text widget displays a string of text that can be styled as follows:
+    Text(
+        "Some exciting text",
+        style: TextStyle(color: Colors.red, fontSize: 14),
+        textAlign: TextAlign.center
+    )
+Pay attention to the structure of the Text constructor. The first parameter, that is, the string of text, is a positional parameter. It is then followed by a series of named parameters. Flutter leans heavily on the named parameter approach to keep widget trees readable, but where a parameter is fundamental to the widget, such as the text for a Text widget, this is often the first positional parameter.
+
+The most common properties of the Text widget are as follows:
+    • style: This holds a TextStyle instance that controls how the text should be styled. The TextStyle constructor has properties that allow you to set the text color, background, font family, line height, font size, and more.
+
+    • textAlign: This holds a value from the TextAlign enum describing how the text should be aligned. Options include center alignment and justified alignment.
+
+    • maxLines: This holds an integer specifying the maximum number of lines that the text can be wrapped over before it is truncated.
+
+    • overflow: This holds a value from the TextOverflow enum describing how the text should be shown that exceeds the available space. Options include fading, ellipsis, or clipping.
+
+To view all of the available Text widget properties, please refer to the official Text widget documentation page at https://docs.flutter.io/flutter/widgets/Text-class.html.
+
+The Image widget
+The Image widget displays an image from different sources and formats. Currently, the supported image formats are JPEG, PNG, GIF, animated GIF, WebP, animated WebP, BMP, and WBMP:
+    Image(
+        image: AssetImage(
+             "assets/dart_logo.jpg"
+        ),
+    )
+The Image widget is not quite as simple to construct as the Text widget because it needs to know the source of the image file. This could be from the internet, from a file on the device, or from within the app as defined in the assets. To manage this, the widget has an image constructor property that specifies an ImageProvider type.
+
+In this example, the image comes from an asset within the app. This is denoted by using an AssetImage provider that takes the location of the asset as a positional constructor parameter. To retrieve an image from the internet, instead of AssetImage, you should use the NetworkImage provider, which works in a similar way. To retrieve an image from a file on the device, you should use the FileImage provider.
+
+The Image class contains convenience constructors to help you with the loading of images, such as the following:
+    • Image.asset: This creates an AssetImage provider, which is used to obtain an image from your assets using the asset key. For example, take a look at the following:
+        Image.asset(
+            'assets/dart_logo.jpg',
+        )
+    • Image.network: This creates a NetworkImage provider to obtain an image from a URL. For example, take a look at the following:
+        Image.network(
+            'https://picsum.photos/250?image=9',
+        )
+    • Image.file: This creates a FileImage provider to obtain an image from a file:
+        Image.file(
+        File(file_path)
+        )
+Note that this uses a File object to refer to the location of the file. Now that we have explored the Text and Image widgets, you have the tools to display information to the user. However, your app will need to allow users to input data, so let's take a look at some of the built-in widgets that will allow this interaction.
+
+* Material Design and iOS Cupertino widgets
+Many of the widgets in Flutter are descended, in some way, from a platform-specific guideline: Material Design or iOS Cupertino. This enables the developer to follow platform-specific guidelines in the easiest possible way.
+
+For example, Flutter does not have a Button widget; instead, it provides alternative button implementations for Google Material Design and iOS Cupertino guidelines. However, you can quite easily just choose one set of implementations to use in the development of your app and use that for all releases (such as the Play Store, the App Store, or the web). There is definitely no need to switch between Material and Cupertino depending on whether the app is running on Android or iOS.
+
+* Buttons
+Buttons are widgets that automatically accept a user interaction (such as a tap or a click) and call the relevant code or method supplied to them in their constructor.
+
+On the Material Design side, Flutter implements the following button widgets:
+• ElevatedButton: The ElevatedButton widget was previously named
+RaisedButton, but this name was deprecated for clarity. However, you might
+notice the use of the RaisedButton widget in old code examples, which is
+effectively the same widget. The ElevatedButton widget is a button that appears
+to hover slightly above the page.
+
+• FloatingActionButton: As we mentioned earlier, a floating action button
+is circular, shows an icon, and hovers over the page, generally, in the lower-right
+corner, although the position can be configured. It is used to enact a primary action
+for the page it is shown on. For example, on a page showing email messages, the
+action button could have a plus icon on it denoting the ability to create a new email
+when it is pressed.
+
+    • TextButton: A text button is a string of text printed on a Material widget that will react to touch by showing the standard Material splash or ripple. Unlike an ElevatedButton widget, the TextButton widget does not appear to hover or looks raised above the page.
+
+    • IconButton: An icon button is a picture printed on a Material widget that, like the TextButton widget, will react to touch by showing a splash or ripple effect.
+
+    • DropDownButton: The DropDownButton widget is very similar to the drop-down buttons that you view on web pages. It shows a currently selected item alongside an arrow. Pressing the button will drop down a menu that allows the user to select another item.
+
+    • PopUpMenuButton: The PopUpMenuButton widget will pop up a menu of options to the user, allowing the user to take an action on the app. For the iOS Cupertino style, Flutter provides the CupertinoButton class.
+
+* Scaffold
+Scaffold implements the basic structure of a Material Design or iOS Cupertino visual layout. Generally, you would use this as the root widget of your page because it allows you to lay out your whole page in a somewhat standard format.
+
+For Material Design, the Scaffold widget can contain multiple Material Design
+components, such as the following:
+
+    • AppBar: The AppBar sits at the top of the device screen. Generally, it will hold a child widget containing text (the title of the page), which appears on the left, and then some action widgets, generally buttons, which appear on the right.
+
+    • body: The body is the main chunk of the page. It will appear below the AppBar (if you have one) and cover the whole screen.
+
+    • TabBar: Generally, the TabBar is just below the AppBar and allows the user to switch horizontally between several sub-pages of your page. For example, you might have a chat client and want the user to be able to switch between live messages and pinned messages. The TabBar will allow this to happen with a horizontal swipe.
+
+    • TabBarView: To work with a TabBar, you will need to define the views that appear as the user moves between the tabs. TabBarView fits that need and will need to match.
+
+    • BottomNavigationBar: BottomNavigationBar sits at the base of the device screen, allowing the user to switch between the top-level app views via a single tap.
+
+    • Drawer: Drawer is a panel that slides in from the side of the screen, allowing the user to quickly navigate around the app. Generally, you would use a bottom navigation bar for the main context changes (for example, to switch from email to the calendar), and then possibly use Drawer to navigate within that context (for example, to choose the inbox or spam folder within the email section). However, Flutter is not opinionated in terms of how you should lay out your app, so you are free to choose how to use these widgets yourself.
+
+In iOS Cupertino, the structure is different with some specific transitions and behaviors.
+
+The available iOS Cupertino classes are CupertinoPageScaffold and CupertinoTabScaffold, which are typically composed of the following:
+    • CupertinoNavigationBar: A top navigation bar, which is typically used with CupertinoPageScaffold
+    • CupertinoTabBar: A bottom tab bar, which is typically used with CupertinoTabScaffold
+
+As you can see, the Cupertino Scaffold is far more limited in terms of its structure and features than the Material Scaffold. Generally, a good starting point to get a page of your app up and running is to use the Material Scaffold because it covers most of the needs of a page right from the start.
+
+* Dialogs
+A dialog pops over the top of the currently displayed UI as a modal window, and the
+display behind it is masked with a translucent gray mask. They are useful for popping
+short snippets of information, warnings, or errors.
+
+Both Material Design and Cupertino dialogs are implemented by Flutter. On the Material
+Design side, they are SimpleDialog and AlertDialog; on the Cupertino side, there
+is CupertinoAlertDialog.
+
+* Text fields
+Text fields allow a user of your app to enter text using their device's keyboard.
+
+Text fields are implemented in both guidelines by the TextField widget in Material Design and by the CupertinoTextField widget in iOS Cupertino. Both of them display the keyboard for user input. Some of their common properties are as follows:
+
+    • autofocus: This indicates whether the TextField should be focused automatically when it is shown (if nothing else is already focused on).
+
+    • enabled: This sets the field as editable or not.
+
+    • keyboardType: This changes the type of keyboard that is displayed to the user when editing. For example, if you only want the user to enter numbers, then the number pad is shown, or if you want the user to enter a password, then autocorrect is disabled.
+
+We will look at TextField widgets in much more detail in future courses, Handling User Input and Gestures, especially their use within an input format.
+
+* Selection widgets
+Selection widgets allow a user to select one or more answers to a question.
+
+The available control widgets for selection in Material Design are as follows:
+    • Checkbox allows the selection of multiple options in a list.
+    • Radio allows a single selection in a list of options.
+    • Switch allows the toggle (on/off) of a single option.
+    • Slider allows the selection of a value in a range by moving the slider thumb.
+
+On the iOS Cupertino side, some of these widget functionalities do not exist. However, there are some alternatives available, as follows:
+
+• CupertinoActionSheet: This is an iOS-style modal bottom action sheet that enables you to choose one option among many.
+
+• CupertinoPicker: This is a picker control that is used to select an item in a short list.
+
+• CupertinoSegmentedControl: This behaves like a radio button, where the selection is a single item from an options list.
+
+• CupertinoSlider: This is similar to Slider in Material Design.
+
+• CupertinoSwitch: This is also similar to Material Design's Switch. It is worth noting that there is no issue with mixing and matching widgets. If you decide that a Cupertino widget looks better than a Material widget, then feel free to use it within your app.
+
+* Date and time pickers
+For Material Design, Flutter provides date and time pickers through the showDatePicker and showTimePicker functions, which build and display the Material Design dialog for the corresponding actions via a dialog.
+
+On the iOS Cupertino side, the CupertinoDatePicker and CupertinoTimerPicker widgets are provided, following the previous CupertinoPicker style.
+
+* Other components
+There are also design-specific widgets that are unique to each platform. Material Design, for example, has the concept of cards, which are defined in the documentation as follows:
+    "A sheet of Material used to represent some related information."
+On the other side of things, Cupertino-specific widgets could have unique transitions present in the iOS world.
+
+It is worth exploring further and then deciding on a design standard for your app. Consistency is probably more important for an app so that the user feels comfortable interacting with your app, so take the time to decide on your approach.
+
+Now that you have an idea of the vast number of built-in widgets available in Flutter, the next natural question is to ask how you should control where they appear on the screen. We've seen a tiny glimpse of this through the Scaffold widget, but most of the content of the Scaffold is held in the body parameter, and that doesn't manage where its child widgets are shown on the screen. It seems we might need another type of widget, that is, a type that can manage the position of other widgets. So, let's take a look at those next. 
+
+* Layouts
+Some widgets initially do not appear to have an effect on how the UI appears to the user. However, if they are in the widget tree, then they will be there somewhere, which affects how a child widget appears (such as how it is positioned or styled).
+
+For example, to position a button in the bottom corner of the screen, we could specify a positioning that is relative to the screen. However, as you might have noticed, buttons and other widgets do not have a position property.
+
+So, you might be asking yourself, "How are widgets organized on the screen?" Well, the answer is more widgets! Flutter provides widgets that allow you to compose the layout itself, with positioning, sizing, styling, and more.
+
+Displaying a single widget on the screen is not a good way to organize a UI. Usually, we will lay out a list of widgets that are organized in a specific way; to do so, we use container widgets.
+
+Let's take a look at the most common built-in layout types.
+
+* Container
+The simplest way to manage the layout of a widget is to place it as the child of
+a Container widget. Take a look at the following example:
+    Container(
+        decoration: BoxDecoration(
+            border: Border.all(),
+        ),
+        padding: EdgeInsets.all(14),
+        child: Text(
+            'Beautiful Teesside',
+        ),
+    )
+In this example, the Container widget will put 14 pixels of padding around itself, then place a border on all 4 sides, and then, finally, place the text of 'Beautiful Teesside' within the border.
+
+The Container widget holds useful attributes, such as the following:
+
+• padding: This indicates how much space should be placed around the container when laying it within the widget tree.
+
+• margin: This indicates the amount of space to place around the child widget.
+
+• decoration: This allows you to choose whether the Container widget should have a background image or color, whether it should have borders around it, whether the borders should have sharp or curved corners, and much more.
+
+• height/width: This allows you to decide how much space the Container widget should take up on the screen.
+
+Note that there are more specialized widgets that build on the generality of the Container widget.
+
+* Styling and positioning
+The task of positioning a child widget within a parent widget, such as a Stack widget, is done through other widgets. We've discussed the generic Container widget, but Flutter also provides widgets for very specific tasks.
+
+Centering a widget inside a parent widget is achieved by wrapping the child inside a Center widget. Aligning a child widget relative to a parent can be done with the Align widget, where you specify the desired position through its alignment property. Another useful widget is Padding, which allows you to specify the amount of space around the given child.
+
+The functionalities of these widgets are aggregated in the Container widget, which combines those common positioning and styling widgets to apply them to a child directly, making the code much cleaner and shorter.
+
+* Row and Column
+The most common containers in Flutter are the Row and Column widgets. They have a children property that expects a list of widgets to display in some kind of direction (that is, a horizontal list for Row or a vertical list for Column). You viewed a Column widget in the Hello World! app, so let's take a look at a Row example:
+
+    Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+            Text("Staithes"),
+            Text("Saltburn"),
+            Text("Whitby"),
+        ],
+    )
+In this example, a row of three pieces of text will be placed on the screen with an equal amount of space between them. Note that Row isn't great at managing overruns of space, so on a smaller device, you would need to add additional widgets or properties to ensure that the text is displayed correctly.
+
+* Stack
+Another widely used widget is the Stack widget, which organizes children widgets in layers, where one child can overlap another child either partially or totally. This appears similar to a Row or Column widget in that it takes a list of children widgets and layers them in the order they are defined. So, the first widget is effectively at the bottom of the stack, and the last widget is at the top, potentially covering the lower widgets.
+
+* ListView and GridView
+If you have developed some kind of mobile application before, then you might have already used lists and grids. Flutter provides classes for both of them, namely, the ListView and GridView widgets.
+
+ListView is very similar to a Column widget; however, it is designed to be scrollable and also draw widgets on demand. For example, if you have a list of more than 10 widgets, such as a list of songs or films, then for performance reasons, you might not want to draw all of the widgets to the screen. ListView allows you to draw these widgets as they arrive on the screen due to scrolling or orientation changes, using the ListView.builder constructor. We will look at this in more detail in later courses.
+
+GridView is also very similar but creates grids of widgets rather than simple lists. It also has the on-demand ability of ListView.
+
+In addition to this, other less typical, but nonetheless important, container widgets are available, such as Table, which organizes children in a tabular layout.
+
+* Other widgets (gestures, animations, and transformations)
+Flutter provides widgets for anything related to the UI. For example, gestures such as scroll or touch will all be related to a widget that manages gestures. Animations and transformations, such as scaling and rotation, are also all managed by specific widgets. We will be examining some of them in more detail in the following chapters. Now that we've learned how to display a UI and interact with the user, there is another key concept to understand that allows your app to better react to other external changes, that is, streams.

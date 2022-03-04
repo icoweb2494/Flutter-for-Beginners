@@ -1,0 +1,168 @@
+* Stateful/stateless widgets
+Widgets play an important role in Flutter application development. They are the pieces that form the UI; they are the code representation of what is visible to the user.
+
+UIs are almost never static; they change frequently, as you will have experienced when you have used a web page or an application. Although immutable by definition, widgets are not meant to be final – after all, we are dealing with a UI, and a UI will certainly change during the life cycle of any application. That's why Flutter provides two types of widgets: stateless and stateful.
+
+As you might expect, a stateless widget has no state, whereas a stateful widget holds state and adapts based on that state. This difference impacts the life cycle of the widget, how it is constructed, and how the code is structured. It's the developer's responsibility to choose what kind of widget to use in each situation. Generally speaking, a developer should look at stateless as the default option unless the widget needs to hold state. A stateful widget could be used for every scenario, but this will impact performance and code maintainability.
+
+Additionally, Flutter uses the concept of inherited widgets (the InheritedWidget type), which is also a kind of widget, but it is slightly different from the other two types that we've mentioned.
+
+* Stateless widgets
+A typical UI will be composed of many widgets, and some of them will never change their properties after being instantiated. They do not have a state; that is, they do not change by themselves through an internal action or behavior. Instead, they are changed by external events on parent widgets in the widget tree. So, it's safe to say that stateless widgets give control regarding how they are built to a parent widget in the tree.
+
+The parent widget instantiates the child stateless widget and passes a set of properties during the instantiation. The child widget can only receive these properties from the parent widget and will not change them by itself. In terms of code, this means that stateless widgets only have final properties defined during construction, and these properties can only be changed through the update of a parent widget with the changes then rippling down to the child widgets.
+
+* Code example
+The very first stateless widget inside the application is the application class itself:
+    class MyApp extends StatelessWidget {
+        @override
+        Widget build(BuildContext c) {
+            return MaterialApp(
+                title: 'Flutter Demo',
+                theme: ThemeData(
+                    primarySwatch: Colors.blue,
+                ),
+                home: MyHomePage(title: 'Flutter Demo Home Page'),
+            );
+        }
+    }
+
+As you can see, the MyApp class extends StatelessWidget and overrides the build(BuildContext) method. The build method is critical to all widgets and describes how the widget should appear on the screen. It does this by building a widget subtree below it. MyApp is the root of the widget tree; it is the top-level widget that is instantiated within the runApp method in the Dart main method. Therefore, it builds all the widgets down the tree. In this example, the direct child is MaterialApp. According to the documentation, MaterialApp can be defined as follows:
+
+* Material Design
+Material Design is a standard set of designs and digital experiences that were created by Google to help teams build high-quality UIs. Apple has an equivalent named Cupertino.
+
+In this example, the stateless widget does not receive any properties from its parent because it doesn't have a parent. We will view examples of properties being passed later.
+
+BuildContext is an argument provided to the build method as a useful way to interact with the widget tree. It allows you to access important ancestral information that helps to describe the widget that is being built. For example, the theme data defined in this widget can be accessed by all child widgets to ensure there is a consistent look and feel to your application.
+
+In addition to other properties, MaterialApp contains the home property. This is the first widget that is displayed within your application. Here, home refers to the MyHomePage widget, which is not a built-in widget, but rather a stateful widget defined within the Hello World! application.
+
+You should now be able to understand how Flutter composes widgets to create the display. Let's take a look at the partner of stateless widgets, that is, the stateful widget.
+
+* Stateful widgets
+Unlike stateless widgets, which receive properties from their parents that are constant throughout the widgets' lifetime, stateful widgets are meant to change their properties dynamically during their lifetimes. By definition, stateful widgets are also immutable, but they have a companion State class that represents the current state of the widget.
+
+A widget instantiates a child widget and, similar to the stateless widget example, passes properties to the child. These properties are, once again, final and cannot be changed within the widget. However, unlike the stateless widget example, a companion State object also has access to the widget properties and, additionally, is able to hold other properties that are not final.
+
+By holding the state of the widget in a separate State object, the framework can rebuild the widget whenever necessary without losing its current associated state. The element in the elements tree holds a reference to the corresponding widget and also the State object associated with it. The State object will notify you when the widget needs to be rebuilt and then perform an update in the elements tree, too.
+
+* Code example
+MyHomePage is a stateful widget, and so, it is defined with a State object named _MyHomePageState, which contains properties that affect how the widget looks. First, let's take a look at the widget:
+    class MyHomePage extends StatefulWidget {
+        MyHomePage({Key key, required this.title}) : super(key: key);
+
+        final String title;
+
+        @override
+        _MyHomePageState createState() => _MyHomePageState();
+    }
+
+The first thing that you should pay attention to is that this extends the StatefulWidget, identifying, therefore, that this will have a State companion object. Stateful widgets must override the createState() method and return an instance of the companion object. In this example, it returns an instance of _MyHomePageState.
+
+A valid widget state is a class that extends the framework State class.
+
+Additionally, in this example, properties have been passed from a parent widget and these are surfaced in the widget constructor. Note that the title property has been passed in and is stored in the widget in the final field, which is named title.
+
+Dart has some clever shortcuts in the way it structures constructors, and by using this.title in this constructor body, we can automatically assign the value of the title property to the title field.
+
+Normally, stateful widgets define their corresponding State classes in the same file Additionally, state is typically private to the widget library, as external clients do not need to interact with it directly.
+
+    class _MyHomePageState extends State<MyHomePage> {
+        int _counter = 0;
+
+        void _incrementCounter() {
+            setState(() {
+                _counter++;
+            });
+        }
+
+        @override
+        Widget build(BuildContext context) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text(widget.title),
+                ),
+                body: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                            Text(
+                                'You have pushed the button this many times:',
+                            ),
+                            Text(
+                                '$_counter',
+                                style: Theme.of(context).textTheme.headline4,
+                                ),
+                            ],
+                        ),
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                    onPressed: _incrementCounter,
+                    tooltip: 'Increment',
+                    child: Icon(Icons.add),
+                ), // This trailing comma makes auto-formatting nicer forbuild methods.
+            );
+        }
+    }
+
+    Let's go through this code section by section.
+First, there is only one class field, which is named _counter, so you can infer that the state of the MyHomePage widget is defined by that single property. The _counter property records the number of presses of the button in the lower-right corner of the screen. How this _counter property changes will be defined in your business logic.
+
+The first method we encounter is the _incrementCounter method. This takes no arguments and has a void return code specifying that it returns no value. However, it does do something crucial that we should explore in further detail:
+    setState(() {
+        _counter++;
+    });
+
+A stateful widget is meant to change its appearance during its lifetime – that is, it defines what will change – and so it needs to be rebuilt to reflect such changes. The framework rebuilds the StatefulWidget to reflect a new state. However, how does the framework know when something in the widget changes and that a rebuild is required?
+
+The answer is the setState method. This method receives a function as a parameter that updates the widget's corresponding State. In this case, we have created an anonymous function, and in the function body, we have specified that the _counter variable should be incremented. By calling setState, the framework is notified that it needs to rebuild the widget. Once called, the widget will be redrawn with the new _counter value already set.
+
+Finally, we reach the widget's build method. The method signature and intended function are identical to the build method of StatelessWidget that we discussed earlier. However, unlike StatelessWidget, we now have a state that will affect how we draw the widget, which could lead to far more complex code involving even more conditional statements.
+
+The build method can look intimidating, and we will look at the individual widgets in more detail later in the chapter. However, at this point, try to get a feel for the composition structure shown. The method returns a Scaffold widget at the top level and is composed of three child widgets via three constructor arguments:
+
+    • appBar: This holds a widget of the AppBar type, which itself has one constructor argument named title. As you can guess, this describes the widget that will appear at the top of the screen as an app bar.
+
+    • body: This can hold any widget and appears in the main body of the application (that is, between the top app bar and any bottom menu bar). In this case, it holds a Center widget (which centers the child content). This, in turn, holds a Column widget (which creates a vertical column of widgets). Finally, this holds two Text widgets (which display a string of text).
+
+    • floatingActionButton: This holds a widget of the FloatingActionButton type, which is a button that floats above the app body in the lower-right corner (as the default configuration) and acts as a button.
+
+Note that one of the arguments for the FloatingActionButton constructor is onPressed, and that the value is the _incrementCounter method. This ties the whole flow together:
+
+    1. The MyHomePage widget calls the build method of the companion state to display the app bar, body, and action button.
+
+    2. The user presses the action button.
+
+    3. The onPressed argument value is triggered, which calls the _incrementCounter method.
+
+    4. The _incrementCounter method calls the setState method with the anonymous function, specifying that the _counter variable should be incremented.
+
+    5. The framework calls the anonymous function, thereby incrementing the _counter variable.
+
+    6. The framework redraws the widget by calling the build method of the companion state again to display the updated app bar, body, and action button:
+
+As the preceding diagram shows, the setState method is crucial to this whole flow, and
+understanding this redrawn flow is central to how the Flutter framework works.
+
+* Inherited widgets
+Besides StatelessWidget and StatefulWidget, there is one more type of widget in the Flutter framework, InheritedWidget. Sometimes, one widget might require access to data further up the widget tree. In such scenarios, one solution is to replicate the information down to the interested widget by passing it through all of the intermediate widgets.
+
+let's suppose that one of the widgets down the tree requires access to the title property from the root widget. For this to happen in a world where there are only stateful and stateless widgets, we would need to pass the title property to every child widget via the constructors so that the child widget could, in turn, pass the title property to its child widgets. This can lead to lots of boilerplate code, can be error-prone if one of the widgets isn't coded quite right, and can be really painful if it is decided that the child widget needs another property, which means that all of the intermediate widgets need to be updated.
+
+To address this problem, Flutter provides the InheritedWidget class. This is an auxiliary kind of widget that helps to propagate information down the tree.
+
+By adding an InheritedWidget to the tree, any widget below it can access the data it exposes by using the of(InheritedWidget) method of the BuildContext class that receives an InheritedWidget type as a parameter and uses the tree to find the first ancestral widget of the requested type.
+
+There are some very common uses of InheritedWidget in Flutter. One of the most common uses is from the Theme class, which helps to describe colors for a whole application.
+
+* The widget key property
+If you take a look at the constructors of the StatelessWidget and StatefulWidget classes, you will notice a parameter named key. This is an important property for widgets in Flutter.
+
+The key property allows you to preserve the state of a widget between rebuilds. You might remember that the framework takes the widget tree and renders it to an element tree. The element tree is a very simple representation of the widget tree that only holds the widget's type and the references to its children widgets. When a change or rebuild occurs, the framework uses the widget's type and children references to determine whether a redraw is needed. In situations where there are many widgets of the same type as children of the same widget (for example, rows or columns), there can be situations where the ordering changes but doesn't invalidate the element tree. In this situation, the behavior of Flutter can be unexpected.
+
+Without keys, the element tree would not know which state corresponds to which widget, as they would all have the same type. When a widget has a state, it needs the corresponding state to be moved around with it. Put simply, that is what a key helps the framework to do. By holding the key value, the element in question will know the corresponding widget state that needs to be with it.
+
+In most situations, a key is not needed (and should not be used); however, if you see some strange behavior where you are sure your widget is changing state but this is not being correctly reflected on the UI, then it is worth checking whether the framework is misunderstanding the element tree and whether a key might be a suitable remedy for the situation. If you need more information regarding how a key affects the widget and the available types of keys, please check out the official documentation's introduction to keys: https://flutter.dev/docs/development/ui/widgets-intro#keys.
+
+We have now explored the fundamental building blocks of Flutter: widgets. Specifically, we have looked at three types of widgets, stateless, stateful, and inherited, along with the situations that you would use them in. Now you have a basic knowledge of the fundamentals of widgets, let's take a look at some widgets you get for free when you start your UI.

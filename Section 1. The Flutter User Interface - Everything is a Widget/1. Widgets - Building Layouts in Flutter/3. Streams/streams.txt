@@ -1,0 +1,25 @@
+Streams
+As its name suggests, a Stream is simply a stream of data that your app can react to. For
+example, a stream is used to allow your app to respond to user authentication changes,
+which we will explore, in further detail, in Chapter 9, Popular Third-Party Plugins. That
+stream shares updates to a user's authentication status. To use the stream, you register to
+listen to the Stream instance and supply a function that will be called when there is new
+data added to the stream.
+
+Throughout third-party plugins, especially Firebase plugins, you will see the regular use of streams so that the plugins can effectively call back into your code to tell you something has changed. They are very similar in concept to the use of a callback method, which is passed to the data source and called on data changes.
+
+As a very brief example to give context to this idea, let's take a look at an example of a stream that gives updates when the weather forecast changes. Let's suppose a plugin supplies us with a WeatherService class. We might write some code like this:
+
+    WeatherService.onForecastChange().listen((Forecast fct) {
+        if (fct.sunny) {
+            print("Yay, beach weather!");
+        } else {
+            print("Time to get the board games out!");
+        }
+    });
+
+In this example, we call the onForecastChange() method on WeatherService, which returns a stream. Then, we call the listen() method on the returned stream and pass in an anonymous function as an argument to the listen() method. The anonymous function accepts a Forecast instance as a parameter.
+
+Now, every time the forecast changes, WeatherService will put a new Forecast instance onto the stream, and the anonymous function will be triggered, printing out the "sunny" or "not sunny" message.
+
+The use of streams is very powerful because it allows you to create a very reactive app. Your app will not only react to user inputs, but it will also react to other external changes such as database updates, authentication changes, third-party service updates (such as the Weather Forecast service), or device sensor updates (such as orientation), among many other things.
